@@ -1,0 +1,44 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.github.jengelman.gradle.plugins:shadow:1.2.4"
+    }
+}
+
+apply plugin: 'idea'
+apply plugin: 'java'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+archivesBaseName = 'in-vader-agent'
+sourceCompatibility = 1.8
+version = '0.0.1'
+
+shadowJar {
+    relocate 'net.bytebuddy', 'com.github.invader.agent.deps.bytebuddy'
+    relocate 'org.apache.commons.lang3', 'com.github.invader.agent.deps.commons.lang3'
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'in-vader-agent',
+                   'Implementation-Version': version,
+                   'Premain-Class': 'com.github.invader.agent.Agent',
+                   'Can-Redefine-Classes': 'true',
+                   'Can-Retransform-Classes': 'true',
+                   'Can-Set-Native-Method-Prefix': 'true'
+    }
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'net.bytebuddy:byte-buddy:1.5.2'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
+    testCompile 'junit:junit:4.+'
+}
