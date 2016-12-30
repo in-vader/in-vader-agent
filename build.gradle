@@ -20,6 +20,9 @@ version = '0.0.1'
 shadowJar {
     relocate 'net.bytebuddy', 'com.github.invader.agent.deps.bytebuddy'
     relocate 'org.apache.commons.lang3', 'com.github.invader.agent.deps.commons.lang3'
+    relocate 'org.yaml.snakeyaml', 'com.github.invader.agent.deps.snakeyaml'
+    relocate 'com.squareup.okhttp3', 'com.github.invader.agent.deps.okhttp'
+    relocate 'com.google.guava', 'com.github.invader.agent.deps.guava'
 }
 
 jar {
@@ -39,6 +42,12 @@ repositories {
 
 dependencies {
     compile 'net.bytebuddy:byte-buddy:1.5.2'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
+    compile 'org.apache.commons:commons-lang3:3.5'
+    compile 'org.yaml:snakeyaml:1.8'
+    compile 'com.squareup.okhttp3:okhttp:3.4.2'
+    compile 'com.google.guava:guava:11.0.2'
+
     testCompile 'junit:junit:4.+'
+
+    compileOnly 'org.projectlombok:lombok:1.16.10'
 }
