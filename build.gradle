@@ -23,6 +23,7 @@ shadowJar {
     relocate 'org.yaml.snakeyaml', 'com.github.invader.agent.deps.snakeyaml'
     relocate 'com.squareup.okhttp3', 'com.github.invader.agent.deps.okhttp'
     relocate 'com.google.guava', 'com.github.invader.agent.deps.guava'
+    relocate 'com.google.code.gson:gson', 'com.github.invader.agent.deps.gson'
 }
 
 jar {
@@ -37,6 +38,7 @@ jar {
 }
 
 repositories {
+    mavenLocal()
     jcenter()
 }
 
@@ -46,6 +48,8 @@ dependencies {
     compile 'org.yaml:snakeyaml:1.8'
     compile 'com.squareup.okhttp3:okhttp:3.4.2'
     compile 'com.google.guava:guava:11.0.2'
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.github.invader:invader-controller-transport:0.0.1'
 
     testCompile 'junit:junit:4.+'
 

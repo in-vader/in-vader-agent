@@ -12,8 +12,17 @@ import org.apache.commons.lang3.RandomUtils;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class HttpServletDelayInterceptor implements Interceptor {
+    private AtomicInteger minDelay;
+    private AtomicInteger maxDelay;
+
+    HttpServletDelayInterceptor() {
+        minDelay = new AtomicInteger(0);
+        maxDelay = new AtomicInteger(0);
+    }
+
     @Override
     public ElementMatcher<? super TypeDescription> getTypeMatcher() {
         return ElementMatchers.named("javax.servlet.http.HttpServlet");
@@ -27,12 +36,20 @@ public class HttpServletDelayInterceptor implements Interceptor {
     @Override
     @RuntimeType
     public Object intercept(@AllArguments Object[] allArguments, @Origin Method method, @SuperCall Callable<?> callable) throws Exception {
-        long delay = RandomUtils.nextLong(0, 10000);
+        long delay = RandomUtils.nextLong(minDelay.get(), maxDelay.get());
         if (delay > 0) {
             System.out.println("Sleeping for " + delay + " ms");
             Thread.sleep(delay);
         }
 
         return callable.call();
+    }
+
+    public void setMinDelay(int minDelay) {
+        this.minDelay.set(minDelay);
+    }
+
+    public void setMaxDelay(int maxDelay) {
+        this.maxDelay.set(maxDelay);
     }
 }

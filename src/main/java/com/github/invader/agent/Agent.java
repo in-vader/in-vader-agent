@@ -1,5 +1,8 @@
 package com.github.invader.agent;
 
+import com.github.invader.agent.config.AgentConfiguration;
+import com.github.invader.agent.config.AgentConfigurationParser;
+import com.github.invader.agent.config.InterceptorConfigTask;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
@@ -7,19 +10,25 @@ import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.utility.JavaModule;
 
 import java.lang.instrument.Instrumentation;
-import java.util.Arrays;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 public class Agent {
     public static void premain(String args, Instrumentation instrumentation) {
-        Arrays.asList(new HttpServletFailInterceptor(), new HttpServletDelayInterceptor())
-                .stream()
-                .forEach(i -> {
+        AgentConfiguration agentConfiguration = new AgentConfigurationParser().parse();
+
+        Stream.of(new HttpServletFailInterceptor(), new HttpServletDelayInterceptor())
+                .forEach(interceptor -> {
                     new AgentBuilder.Default()
                             .with(new LoggingListener())
-                            .type(i.getTypeMatcher())
-                            .transform((builder, type, classLoader) -> builder.method(i.getMethodMatcher())
-                                    .intercept(MethodDelegation.to(i))
+                            .type(interceptor.getTypeMatcher())
+                            .transform((builder, type, classLoader) -> builder.method(interceptor.getMethodMatcher())
+                                    .intercept(MethodDelegation.to(interceptor))
                             ).installOn(instrumentation);
+
+                    Executors.newScheduledThreadPool(5).scheduleWithFixedDelay(
+                            new InterceptorConfigTask(agentConfiguration, interceptor), 0, 10, TimeUnit.SECONDS);
                 });
     }
 

@@ -1,5 +1,6 @@
 package com.github.invader.agent;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.implementation.bind.annotation.AllArguments;
@@ -14,6 +15,12 @@ import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 
 public class HttpServletFailInterceptor implements Interceptor {
+    private AtomicDouble probability;
+
+    HttpServletFailInterceptor() {
+        probability = new AtomicDouble(0);
+    }
+
     @Override
     public ElementMatcher<? super TypeDescription> getTypeMatcher() {
         return ElementMatchers.named("javax.servlet.http.HttpServlet");
@@ -27,11 +34,14 @@ public class HttpServletFailInterceptor implements Interceptor {
     @Override
     @RuntimeType
     public Object intercept(@AllArguments Object[] allArguments, @Origin Method method, @SuperCall Callable<?> callable) throws Exception {
-        if (RandomUtils.nextBoolean()) {
-            System.out.println("Randomly failing");
+        if (RandomUtils.nextDouble(0, 1) < probability.get()) {
             throw new RuntimeException("Randomly failing");
         } else {
             return callable.call();
         }
+    }
+
+    public void setProbability(double probability) {
+        this.probability.set(probability);
     }
 }
