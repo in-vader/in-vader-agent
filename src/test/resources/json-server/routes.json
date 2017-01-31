@@ -1,0 +1,3 @@
+{
+  "/api/groups/:group/apps/:app/agent-config": "/agent-config"
+}

@@ -9,14 +9,39 @@ import net.bytebuddy.implementation.bind.annotation.SuperCall;
 import net.bytebuddy.matcher.ElementMatcher;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
-public interface Interceptor {
+public abstract class Interceptor {
 
-    ElementMatcher<? super TypeDescription> getTypeMatcher();
+    private boolean enabled;
 
-    ElementMatcher<? super MethodDescription> getMethodMatcher();
+    public abstract String getName();
+
+    public abstract ElementMatcher<? super TypeDescription> getTypeMatcher();
+
+    public abstract ElementMatcher<? super MethodDescription> getMethodMatcher();
 
     @RuntimeType
-    Object intercept(@AllArguments Object[] allArguments, @Origin Method method, @SuperCall Callable<?> callable) throws Exception;
+    public abstract Object intercept(@AllArguments Object[] allArguments, @Origin Method method, @SuperCall Callable<?> callable) throws Exception;
+
+    public void setConfig(Map<String, Object> config) {
+        if (config == null) {
+            setEnabled(false);
+        } else {
+            setEnabled(true);
+            applyConfig(config);
+        }
+    }
+
+    protected abstract void applyConfig(Map<String, Object> config);
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    private void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
 }

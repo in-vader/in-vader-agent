@@ -3,7 +3,7 @@ package com.github.invader.agent.config;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
 public class AgentConfigurationParserTest {
@@ -27,23 +27,20 @@ public class AgentConfigurationParserTest {
         AgentConfiguration agentConfiguration = agentConfigurationParser.parse();
 
         // then
-        assertEquals(server, agentConfiguration.getServer());
-        assertEquals(group, agentConfiguration.getGroup());
-        assertEquals(name, agentConfiguration.getName());
+        assertThat(agentConfiguration.getServer()).isEqualTo(server);
+        assertThat(agentConfiguration.getGroup()).isEqualTo(group);
+        assertThat(agentConfiguration.getName()).isEqualTo(name);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionForNotProperlyPreparedFile() throws Exception {
         // given
         System.setProperty(AgentConfigurationParser.CONFIG_FILE_PATH_PROPERTY, "src/test/resources/config-empty.yml");
 
         // when
-        try {
-            agentConfigurationParser.parse();
-        } catch (IllegalArgumentException ex) {
-            return;
-        }
+        agentConfigurationParser.parse();
 
+        // then
         fail("An IllegalArgumentException should have be thrown.");
     }
 }
