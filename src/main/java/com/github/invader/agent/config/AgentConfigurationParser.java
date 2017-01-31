@@ -10,8 +10,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class AgentConfigurationParser {
-    static final String CONFIG_FILE_PATH_PROPERTY = "invader.config.file";
 
+    static final String CONFIG_FILE_PATH_PROPERTY = "invader.config.file";
     private final Yaml parser;
 
     public AgentConfigurationParser() {

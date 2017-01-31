@@ -9,6 +9,8 @@ import net.bytebuddy.implementation.bind.annotation.SuperCall;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
 import org.apache.commons.lang3.RandomUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -16,6 +18,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class HttpServletDelayInterceptor extends Interceptor {
+
+    private static final Logger LOG = LoggerFactory.getLogger(HttpServletDelayInterceptor.class);
     private AtomicInteger minDelay;
     private AtomicInteger maxDelay;
 
@@ -26,7 +30,7 @@ public class HttpServletDelayInterceptor extends Interceptor {
 
     @Override
     public String getName() {
-        return null;
+        return "delay";
     }
 
     @Override
@@ -45,7 +49,8 @@ public class HttpServletDelayInterceptor extends Interceptor {
         if (isEnabled()) {
             long delay = RandomUtils.nextLong(minDelay.get(), maxDelay.get());
             if (delay > 0) {
-                System.out.println("Sleeping for " + delay + " ms");
+                // TODO: add more details about request that is being delayed (i.e. method, path)
+                LOG.info("Sleeping for {} ms", delay);
                 Thread.sleep(delay);
             }
         }

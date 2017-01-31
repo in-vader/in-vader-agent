@@ -21,9 +21,10 @@ shadowJar {
     relocate 'net.bytebuddy', 'com.github.invader.agent.deps.bytebuddy'
     relocate 'org.apache.commons.lang3', 'com.github.invader.agent.deps.commons.lang3'
     relocate 'org.yaml.snakeyaml', 'com.github.invader.agent.deps.snakeyaml'
-    relocate 'com.google.guava', 'com.github.invader.agent.deps.guava'
+    relocate 'com.google', 'com.github.invader.agent.deps.google'
     relocate 'com.netflix.feign', 'com.github.invader.agent.deps.feign'
     relocate 'com.fasterxml.jackson', 'com.github.invader.agent.deps.jackson'
+    relocate 'org.slf4j', 'com.github.invader.agent.deps.slf4j'
 }
 
 jar {
@@ -50,12 +51,13 @@ dependencies {
     compile 'com.netflix.feign:feign-core:8.18.0'
     compile 'com.netflix.feign:feign-jackson:8.18.0'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.6.4'
+    compile 'org.slf4j:slf4j-api:1.7.22'
+    compile 'org.slf4j:slf4j-simple:1.7.22' // TODO: replace with logback with file appender
 
     testCompile 'junit:junit:4.+'
     testCompile 'com.github.tomakehurst:wiremock:2.5.1'
     testCompile 'org.assertj:assertj-core:3.6.2'
     testCompile 'org.mockito:mockito-core:2.7.0'
-
 
     compileOnly 'org.projectlombok:lombok:1.16.10'
 }

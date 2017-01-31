@@ -9,6 +9,8 @@ import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.utility.JavaModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.instrument.Instrumentation;
 import java.util.Arrays;
@@ -16,20 +18,21 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class Agent {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Agent.class);
+
     public static void premain(String args, Instrumentation instrumentation) {
         AgentConfiguration agentConfiguration = new AgentConfigurationParser().parse();
 
         Interceptor[] interceptors = new Interceptor[] { new HttpServletFailInterceptor(), new HttpServletDelayInterceptor() };
 
         Arrays.stream(interceptors)
-                .forEach(interceptor -> {
-                    new AgentBuilder.Default()
-                            .with(new LoggingListener())
-                            .type(interceptor.getTypeMatcher())
-                            .transform((builder, type, classLoader) -> builder.method(interceptor.getMethodMatcher())
-                                    .intercept(MethodDelegation.to(interceptor))
-                            ).installOn(instrumentation);
-                });
+                .forEach(interceptor -> new AgentBuilder.Default()
+                        .with(new LoggingListener())
+                        .type(interceptor.getTypeMatcher())
+                        .transform((builder, type, classLoader) -> builder.method(interceptor.getMethodMatcher())
+                                .intercept(MethodDelegation.to(interceptor))
+                        ).installOn(instrumentation));
 
 
         Executors.newScheduledThreadPool(1)
@@ -41,7 +44,7 @@ public class Agent {
 
         @Override
         public void onTransformation(TypeDescription typeDescription, ClassLoader classLoader, JavaModule module, DynamicType dynamicType) {
-            System.out.println("Transformed - " + typeDescription + ", type = " + dynamicType);
+            LOG.info("Transformed - {}, type = {}", typeDescription, dynamicType);
         }
 
         @Override
@@ -50,8 +53,7 @@ public class Agent {
 
         @Override
         public void onError(String typeName, ClassLoader classLoader, JavaModule module, Throwable throwable) {
-            System.out.println("Error - " + typeName + ", " + throwable.getMessage());
-            throwable.printStackTrace();
+            LOG.error("Error - {}", typeName, throwable);
         }
 
         @Override

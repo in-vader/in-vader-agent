@@ -10,12 +10,16 @@ import net.bytebuddy.implementation.bind.annotation.SuperCall;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
 import org.apache.commons.lang3.RandomUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class HttpServletFailInterceptor extends Interceptor {
+
+    private static final Logger LOG = LoggerFactory.getLogger(HttpServletFailInterceptor.class);
     private AtomicDouble probability;
 
     HttpServletFailInterceptor() {
@@ -41,6 +45,8 @@ public class HttpServletFailInterceptor extends Interceptor {
     @RuntimeType
     public Object intercept(@AllArguments Object[] allArguments, @Origin Method method, @SuperCall Callable<?> callable) throws Exception {
         if (isEnabled() && RandomUtils.nextDouble(0, 1) < probability.get()) {
+            // TODO: add more details about request that is being delayed (i.e. method, path)
+            LOG.info("Randomly failing");
             throw new RuntimeException("Randomly failing");
         } else {
             return callable.call();
