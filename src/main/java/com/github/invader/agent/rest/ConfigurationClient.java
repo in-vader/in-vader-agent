@@ -1,38 +1,25 @@
 package com.github.invader.agent.rest;
 
-import com.github.invader.controller.transport.Config;
-import com.google.gson.Gson;
-import okhttp3.*;
 
-import java.io.IOException;
-import java.util.Optional;
+import feign.*;
+import feign.jackson.JacksonDecoder;
 
-public class ConfigurationClient {
-    private final OkHttpClient client;
-    private final String serverUrl;
+import java.util.Map;
 
-    public ConfigurationClient(String serverUrl) {
-        this.client = new OkHttpClient();
-        this.serverUrl = serverUrl;
-    }
+public interface ConfigurationClient {
 
-    public Optional<Config> getConfiguration(String group, String name) {
-        try {
-            Request request = new Request.Builder()
-                    .url(String.format(serverUrl + "/api/groups/%s/apps/%s/config", group, name))
-                    .build();
+    int CONNECT_TIMEOUT_MILLIS = 1 * 1000;
+    int READ_TIMEOUT_MILLIS = 2 * 1000;
 
-            Response response = client.newCall(request).execute();
+    @RequestLine("GET /api/groups/{group}/apps/{app}/agent-config")
+    Map<String, Map> getConfiguration(@Param("group") String group, @Param("app") String app);
 
-            return Optional.of(decodeConfigFromJSON(response.body().string()));
-        } catch(IOException e) {
-            e.printStackTrace();
-
-            return Optional.empty();
-        }
-    }
-
-    private Config decodeConfigFromJSON(String json) {
-        return new Gson().fromJson(json, Config.class);
+    static ConfigurationClient connect(String serverUrl) {
+        return
+                Feign.builder()
+                        .decoder(new JacksonDecoder())
+                        .retryer(new Retryer.Default())
+                        .options(new Request.Options(CONNECT_TIMEOUT_MILLIS, READ_TIMEOUT_MILLIS))
+                        .target(ConfigurationClient.class, serverUrl);
     }
 }

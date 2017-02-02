@@ -21,9 +21,10 @@ shadowJar {
     relocate 'net.bytebuddy', 'com.github.invader.agent.deps.bytebuddy'
     relocate 'org.apache.commons.lang3', 'com.github.invader.agent.deps.commons.lang3'
     relocate 'org.yaml.snakeyaml', 'com.github.invader.agent.deps.snakeyaml'
-    relocate 'com.squareup.okhttp3', 'com.github.invader.agent.deps.okhttp'
-    relocate 'com.google.guava', 'com.github.invader.agent.deps.guava'
-    relocate 'com.google.code.gson:gson', 'com.github.invader.agent.deps.gson'
+    relocate 'com.google', 'com.github.invader.agent.deps.google'
+    relocate 'com.netflix.feign', 'com.github.invader.agent.deps.feign'
+    relocate 'com.fasterxml.jackson', 'com.github.invader.agent.deps.jackson'
+    relocate 'org.slf4j', 'com.github.invader.agent.deps.slf4j'
 }
 
 jar {
@@ -46,12 +47,17 @@ dependencies {
     compile 'net.bytebuddy:byte-buddy:1.5.2'
     compile 'org.apache.commons:commons-lang3:3.5'
     compile 'org.yaml:snakeyaml:1.8'
-    compile 'com.squareup.okhttp3:okhttp:3.4.2'
-    compile 'com.google.guava:guava:11.0.2'
-    compile 'com.google.code.gson:gson:2.8.0'
-    compile 'com.github.invader:invader-controller-transport:0.0.1'
+    compile 'com.google.guava:guava:21.0'
+    compile 'com.netflix.feign:feign-core:8.18.0'
+    compile 'com.netflix.feign:feign-jackson:8.18.0'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.6.4'
+    compile 'org.slf4j:slf4j-api:1.7.22'
+    compile 'org.slf4j:slf4j-simple:1.7.22' // TODO: replace with logback with file appender
 
     testCompile 'junit:junit:4.+'
+    testCompile 'com.github.tomakehurst:wiremock:2.5.1'
+    testCompile 'org.assertj:assertj-core:3.6.2'
+    testCompile 'org.mockito:mockito-core:2.7.0'
 
     compileOnly 'org.projectlombok:lombok:1.16.10'
 }

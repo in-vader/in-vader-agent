@@ -9,18 +9,28 @@ import net.bytebuddy.implementation.bind.annotation.SuperCall;
 import net.bytebuddy.matcher.ElementMatcher;
 import net.bytebuddy.matcher.ElementMatchers;
 import org.apache.commons.lang3.RandomUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class HttpServletDelayInterceptor implements Interceptor {
+public class HttpServletDelayInterceptor extends Interceptor {
+
+    private static final Logger LOG = LoggerFactory.getLogger(HttpServletDelayInterceptor.class);
     private AtomicInteger minDelay;
     private AtomicInteger maxDelay;
 
     HttpServletDelayInterceptor() {
         minDelay = new AtomicInteger(0);
         maxDelay = new AtomicInteger(0);
+    }
+
+    @Override
+    public String getName() {
+        return "delay";
     }
 
     @Override
@@ -36,20 +46,21 @@ public class HttpServletDelayInterceptor implements Interceptor {
     @Override
     @RuntimeType
     public Object intercept(@AllArguments Object[] allArguments, @Origin Method method, @SuperCall Callable<?> callable) throws Exception {
-        long delay = RandomUtils.nextLong(minDelay.get(), maxDelay.get());
-        if (delay > 0) {
-            System.out.println("Sleeping for " + delay + " ms");
-            Thread.sleep(delay);
+        if (isEnabled()) {
+            long delay = RandomUtils.nextLong(minDelay.get(), maxDelay.get());
+            if (delay > 0) {
+                // TODO: add more details about request that is being delayed (i.e. method, path)
+                LOG.info("Sleeping for {} ms", delay);
+                Thread.sleep(delay);
+            }
         }
 
         return callable.call();
     }
 
-    public void setMinDelay(int minDelay) {
-        this.minDelay.set(minDelay);
-    }
-
-    public void setMaxDelay(int maxDelay) {
-        this.maxDelay.set(maxDelay);
+    @Override
+    protected void applyConfig(Map<String, Object> config) {
+        minDelay.set((Integer) config.get("min"));
+        maxDelay.set((Integer) config.get("max"));
     }
 }

@@ -1,6 +1,6 @@
 package com.github.invader.agent.config;
 
-import com.google.common.base.Preconditions;
+import org.apache.commons.lang3.Validate;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -10,8 +10,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class AgentConfigurationParser {
-    static final String CONFIG_FILE_PATH_PROPERTY = "agentConfigFile";
 
+    static final String CONFIG_FILE_PATH_PROPERTY = "invader.config.file";
     private final Yaml parser;
 
     public AgentConfigurationParser() {
@@ -39,11 +39,8 @@ public class AgentConfigurationParser {
     }
 
     private void checkPreconditions(AgentConfiguration agentConfiguration) {
-        Preconditions.checkArgument(agentConfiguration.getServer() != null, "Server parameter doesn't exist.");
-        Preconditions.checkArgument(!agentConfiguration.getServer().isEmpty(), "Server parameter can't be empty.");
-        Preconditions.checkArgument(agentConfiguration.getGroup() != null, "Group parameter doesn't exist.");
-        Preconditions.checkArgument(!agentConfiguration.getGroup().isEmpty(), "Group parameter can't be empty.");
-        Preconditions.checkArgument(agentConfiguration.getName() != null, "Name parameter doesn't exist.");
-        Preconditions.checkArgument(!agentConfiguration.getName().isEmpty(), "Name parameter can't be empty.");
+        Validate.notBlank(agentConfiguration.getServer(), "Server parameter can't be empty.");
+        Validate.notBlank(agentConfiguration.getGroup(), "Group parameter can't be empty.");
+        Validate.notBlank(agentConfiguration.getName(), "Name parameter can't be empty.");
     }
 }
