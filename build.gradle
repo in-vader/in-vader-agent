@@ -22,7 +22,7 @@ shadowJar {
     relocate 'org.apache.commons.lang3', 'com.github.invader.agent.deps.commons.lang3'
     relocate 'org.yaml.snakeyaml', 'com.github.invader.agent.deps.snakeyaml'
     relocate 'com.google', 'com.github.invader.agent.deps.google'
-    relocate 'com.netflix.feign', 'com.github.invader.agent.deps.feign'
+    relocate 'feign', 'com.github.invader.agent.deps.feign'
     relocate 'com.fasterxml.jackson', 'com.github.invader.agent.deps.jackson'
     relocate 'org.slf4j', 'com.github.invader.agent.deps.slf4j'
 }
