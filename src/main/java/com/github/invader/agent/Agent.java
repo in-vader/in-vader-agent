@@ -3,7 +3,9 @@ package com.github.invader.agent;
 import com.github.invader.agent.config.AgentConfiguration;
 import com.github.invader.agent.config.AgentConfigurationParser;
 import com.github.invader.agent.config.InterceptorConfigTask;
+import com.github.invader.agent.logging.LoggingConfigurator;
 import com.github.invader.agent.rest.ConfigurationClient;
+import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
@@ -13,38 +15,46 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.instrument.Instrumentation;
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 public class Agent {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Agent.class);
-
     public static void premain(String args, Instrumentation instrumentation) {
-        AgentConfiguration agentConfiguration = new AgentConfigurationParser().parse();
+        try {
+            AgentConfiguration agentConfiguration = new AgentConfigurationParser().parse();
 
-        Interceptor[] interceptors = new Interceptor[] { new HttpServletFailInterceptor(), new HttpServletDelayInterceptor() };
+            LoggingConfigurator loggingConfigurator = new LoggingConfigurator();
+            loggingConfigurator.configure(agentConfiguration);
 
-        Arrays.stream(interceptors)
-                .forEach(interceptor -> new AgentBuilder.Default()
-                        .with(new LoggingListener())
-                        .type(interceptor.getTypeMatcher())
-                        .transform((builder, type, classLoader) -> builder.method(interceptor.getMethodMatcher())
-                                .intercept(MethodDelegation.to(interceptor))
-                        ).installOn(instrumentation));
+            Interceptor[] interceptors = new Interceptor[]{new HttpServletFailInterceptor(), new HttpServletDelayInterceptor()};
+
+            Arrays.stream(interceptors)
+                    .forEach(interceptor -> new AgentBuilder.Default()
+                            .with(new LoggingListener())
+                            .type(interceptor.getTypeMatcher())
+                            .transform((builder, type, classLoader) -> builder.method(interceptor.getMethodMatcher())
+                                    .intercept(MethodDelegation.to(interceptor))
+                            ).installOn(instrumentation));
 
 
-        Executors.newScheduledThreadPool(1)
-                .scheduleWithFixedDelay(new InterceptorConfigTask(agentConfiguration, interceptors, ConfigurationClient.connect(agentConfiguration.getServer())),
-                        0, 10, TimeUnit.SECONDS);
+            Executors.newScheduledThreadPool(1)
+                    .scheduleWithFixedDelay(new InterceptorConfigTask(agentConfiguration, interceptors, ConfigurationClient.connect(agentConfiguration.getServer())),
+                            0, 10, TimeUnit.SECONDS);
+        } catch (Throwable t) {
+            System.err.println(MessageFormat.format("Error starting the in-vader agent: {0}", new Object[] { t }));
+            t.printStackTrace();
+        }
     }
 
     public static class LoggingListener implements AgentBuilder.Listener {
 
         @Override
         public void onTransformation(TypeDescription typeDescription, ClassLoader classLoader, JavaModule module, DynamicType dynamicType) {
-            LOG.info("Transformed - {}, type = {}", typeDescription, dynamicType);
+            log.info("Transformed - {}, type = {}", typeDescription, dynamicType);
         }
 
         @Override
@@ -53,7 +63,7 @@ public class Agent {
 
         @Override
         public void onError(String typeName, ClassLoader classLoader, JavaModule module, Throwable throwable) {
-            LOG.error("Error - {}", typeName, throwable);
+            log.error("Error - {}", typeName, throwable);
         }
 
         @Override

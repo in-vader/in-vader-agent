@@ -1,5 +1,6 @@
 package com.github.invader.agent;
 
+import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.implementation.bind.annotation.AllArguments;
@@ -17,9 +18,9 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Slf4j
 public class HttpServletDelayInterceptor extends Interceptor {
 
-    private static final Logger LOG = LoggerFactory.getLogger(HttpServletDelayInterceptor.class);
     private AtomicInteger minDelay;
     private AtomicInteger maxDelay;
 
@@ -50,7 +51,7 @@ public class HttpServletDelayInterceptor extends Interceptor {
             long delay = RandomUtils.nextLong(minDelay.get(), maxDelay.get());
             if (delay > 0) {
                 // TODO: add more details about request that is being delayed (i.e. method, path)
-                LOG.info("Sleeping for {} ms", delay);
+                log.info("Sleeping for {} ms", delay);
                 Thread.sleep(delay);
             }
         }

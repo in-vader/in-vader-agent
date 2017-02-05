@@ -25,6 +25,7 @@ shadowJar {
     relocate 'feign', 'com.github.invader.agent.deps.feign'
     relocate 'com.fasterxml.jackson', 'com.github.invader.agent.deps.jackson'
     relocate 'org.slf4j', 'com.github.invader.agent.deps.slf4j'
+    relocate 'ch.qos.logback', 'com.github.invader.agent.deps.logback'
 }
 
 jar {
@@ -52,7 +53,7 @@ dependencies {
     compile 'com.netflix.feign:feign-jackson:8.18.0'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.6.4'
     compile 'org.slf4j:slf4j-api:1.7.22'
-    compile 'org.slf4j:slf4j-simple:1.7.22' // TODO: replace with logback with file appender
+    compile 'ch.qos.logback:logback-classic:1.1.9'
 
     testCompile 'junit:junit:4.+'
     testCompile 'com.github.tomakehurst:wiremock:2.5.1'
