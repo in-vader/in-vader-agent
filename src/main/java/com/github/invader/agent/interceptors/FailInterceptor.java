@@ -6,14 +6,21 @@ import org.apache.commons.lang3.RandomUtils;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.function.Function;
 
 @Slf4j
 public abstract class FailInterceptor extends Interceptor {
 
     private AtomicDouble probability;
+    private Function<Double, Boolean> shouldFail;
+
+    public FailInterceptor(Function<Double, Boolean> shouldFail) {
+        this.shouldFail = shouldFail;
+        this.probability = new AtomicDouble(0);
+    }
 
     public FailInterceptor() {
-        probability = new AtomicDouble(0);
+        this(p -> RandomUtils.nextDouble(0, 1) < p);
     }
 
     @Override
@@ -22,7 +29,7 @@ public abstract class FailInterceptor extends Interceptor {
     }
 
     protected Object doIntercept(Callable<?> callable) throws Exception {
-        if (isEnabled() && RandomUtils.nextDouble(0, 1) < probability.get()) {
+        if (isEnabled() && shouldFail.apply(probability.get())) {
             log.info("Randomly failing");
             throw new RuntimeException("Randomly failing");
         } else {
