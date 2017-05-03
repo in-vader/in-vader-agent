@@ -1,0 +1,5 @@
+server: 'http://localhost:3000' # the url of the agent controller
+group: 'testGroup' # the name of the application group
+name: 'testAppName' # the name of the application
+log:
+  level: DEBUG

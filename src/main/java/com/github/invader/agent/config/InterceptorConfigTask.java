@@ -1,6 +1,6 @@
 package com.github.invader.agent.config;
 
-import com.github.invader.agent.Interceptor;
+import com.github.invader.agent.interceptors.Interceptor;
 import com.github.invader.agent.rest.ConfigurationClient;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,6 +36,16 @@ public class InterceptorConfigTask implements Runnable {
 
     private void applyConfig(Map<String, Map> config) {
         Arrays.stream(interceptors)
-                .forEach(interceptor -> interceptor.setConfig(config.get(interceptor.getName())));
+                .forEach(interceptor -> applyInterceptorConfig(config, interceptor));
+
+        log.info("Refreshed configs");
+    }
+
+    private void applyInterceptorConfig(Map<String, Map> config, Interceptor interceptor) {
+        try {
+            interceptor.setConfig(config.get(interceptor.getName()));
+        } catch (Exception e) {
+            log.error("Failed to apply configuration to interceptor {}", interceptor.getClass().getName(), e);
+        }
     }
 }

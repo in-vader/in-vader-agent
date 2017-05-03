@@ -1,4 +1,4 @@
-package com.github.invader.agent;
+package com.github.invader.agent.interceptors;
 
 import net.bytebuddy.description.method.MethodDescription;
 import net.bytebuddy.description.type.TypeDescription;
@@ -29,8 +29,8 @@ public abstract class Interceptor {
         if (config == null) {
             setEnabled(false);
         } else {
-            setEnabled(true);
             applyConfig(config);
+            setEnabled(true);
         }
     }
 

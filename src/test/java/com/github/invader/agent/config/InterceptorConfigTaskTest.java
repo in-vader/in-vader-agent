@@ -1,6 +1,6 @@
 package com.github.invader.agent.config;
 
-import com.github.invader.agent.Interceptor;
+import com.github.invader.agent.interceptors.Interceptor;
 import com.github.invader.agent.rest.ConfigurationClient;
 import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
