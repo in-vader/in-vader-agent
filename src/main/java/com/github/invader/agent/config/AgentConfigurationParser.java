@@ -1,8 +1,8 @@
 package com.github.invader.agent.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.apache.commons.lang3.Validate;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,22 +12,16 @@ import java.nio.file.Paths;
 public class AgentConfigurationParser {
 
     static final String CONFIG_FILE_PATH_PROPERTY = "invader.config.file";
-    private final Yaml parser;
-
-    public AgentConfigurationParser() {
-        parser = new Yaml(new Constructor(AgentConfiguration.class));
-    }
+    private final ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
 
     public AgentConfiguration parse() {
-        Object parseResult;
+        AgentConfiguration agentConfiguration;
 
         try {
-            parseResult = parser.load(Files.newInputStream(getConfigFilePath()));
+            agentConfiguration = objectMapper.readValue(Files.newInputStream(getConfigFilePath()), AgentConfiguration.class);// parser.load();
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
-
-        final AgentConfiguration agentConfiguration = (AgentConfiguration) parseResult;
 
         checkPreconditions(agentConfiguration);
 
