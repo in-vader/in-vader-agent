@@ -1,5 +1,6 @@
-package com.github.invader.agent.config;
+package com.github.invader.agent.interceptors.config;
 
+import com.github.invader.agent.config.AgentConfiguration;
 import com.github.invader.agent.interceptors.Interceptor;
 import com.github.invader.agent.rest.ConfigurationClient;
 import com.google.common.collect.ImmutableMap;
@@ -17,9 +18,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class InterceptorConfigTaskTest {
+public class InterceptorConfigurationRefresherTest {
 
-    private InterceptorConfigTask task;
+    private InterceptorConfigurationRefresher.RefresherRunnable task;
 
     @Mock
     private AgentConfiguration agentConfiguration;
@@ -32,7 +33,7 @@ public class InterceptorConfigTaskTest {
 
     @Before
     public void setUp() {
-        task = new InterceptorConfigTask(agentConfiguration, new Interceptor[] { interceptor }, configurationClient);
+        task = new InterceptorConfigurationRefresher.RefresherRunnable(agentConfiguration, new Interceptor[] { interceptor }, configurationClient);
 
         when(agentConfiguration.getGroup()).thenReturn("testGroup");
         when(agentConfiguration.getName()).thenReturn("testName");

@@ -1,0 +1,28 @@
+-
+  name: HttpServlet
+  className: javax.servlet.http.HttpServlet
+  methods:
+    -
+      name: service
+      parameters:
+        - javax.servlet.ServletRequest
+        - javax.servlet.ServletResponse
+-
+  name: JMS
+  interfaceName: javax.jms.MessageListener
+  methods:
+    -
+      name: onMessage
+      parameters:
+        - javax.jms.Message
+-
+  name: RabbitMq
+  interfaceName: com.rabbitmq.client.Consumer
+  methods:
+    -
+      name: handleDelivery
+      parameters:
+        - java.lang.String
+        - com.rabbitmq.client.Envelope
+        - com.rabbitmq.client.AMQP.BasicProperties
+        - byte[]

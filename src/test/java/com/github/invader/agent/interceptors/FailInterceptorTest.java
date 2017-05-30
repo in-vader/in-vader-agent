@@ -1,9 +1,6 @@
 package com.github.invader.agent.interceptors;
 
 import com.google.common.collect.ImmutableMap;
-import net.bytebuddy.description.method.MethodDescription;
-import net.bytebuddy.description.type.TypeDescription;
-import net.bytebuddy.matcher.ElementMatcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -11,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 
@@ -24,22 +20,7 @@ public class FailInterceptorTest {
 
     @Spy
     @InjectMocks
-    private FailInterceptor failInterceptor = new FailInterceptor() {
-        @Override
-        public ElementMatcher<? super TypeDescription> getTypeMatcher() {
-            return null;
-        }
-
-        @Override
-        public ElementMatcher<? super MethodDescription> getMethodMatcher() {
-            return null;
-        }
-
-        @Override
-        public Object intercept(Object[] allArguments, Method method, Callable<?> callable) throws Exception {
-            return null;
-        }
-    };
+    private FailInterceptor failInterceptor;
 
     @Mock
     private Function<Double, Boolean> failureGenerator;
@@ -109,7 +90,7 @@ public class FailInterceptorTest {
 
     private void whenIntercepting() {
         try {
-            failInterceptor.doIntercept(callable);
+            failInterceptor.intercept(callable);
         } catch (Exception e) {
             exception = e;
         }

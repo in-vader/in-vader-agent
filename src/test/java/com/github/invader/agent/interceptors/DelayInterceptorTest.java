@@ -1,9 +1,6 @@
 package com.github.invader.agent.interceptors;
 
 import com.google.common.collect.ImmutableMap;
-import net.bytebuddy.description.method.MethodDescription;
-import net.bytebuddy.description.type.TypeDescription;
-import net.bytebuddy.matcher.ElementMatcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -11,41 +8,20 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DelayInterceptorTest {
 
     @Spy
     @InjectMocks
-    private DelayInterceptor delayInterceptor = new DelayInterceptor() {
-        @Override
-        public ElementMatcher<? super TypeDescription> getTypeMatcher() {
-            return null;
-        }
-
-        @Override
-        public ElementMatcher<? super MethodDescription> getMethodMatcher() {
-            return null;
-        }
-
-        @Override
-        public Object intercept(Object[] allArguments, Method method, Callable<?> callable) throws Exception {
-            return null;
-        }
-    };
+    private DelayInterceptor delayInterceptor;
 
     @Mock
     private Consumer<Long> sleeper;
@@ -99,7 +75,7 @@ public class DelayInterceptorTest {
     }
 
     private void whenIntercepting() throws Exception {
-        delayInterceptor.doIntercept(callable);
+        delayInterceptor.intercept(callable);
     }
 
     private DelayInterceptorResultAssert then() {

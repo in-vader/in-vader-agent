@@ -6,19 +6,22 @@ import org.apache.commons.lang3.Validate;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class AgentConfigurationParser {
+public class AgentConfigurationLoader {
 
     static final String CONFIG_FILE_PATH_PROPERTY = "invader.config.file";
     private final ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
 
-    public AgentConfiguration parse() {
+    public AgentConfiguration load() {
+        return load(System.getProperty(CONFIG_FILE_PATH_PROPERTY));
+    }
+
+    public AgentConfiguration load(String configurationFilePath) {
         AgentConfiguration agentConfiguration;
 
         try {
-            agentConfiguration = objectMapper.readValue(Files.newInputStream(getConfigFilePath()), AgentConfiguration.class);// parser.load();
+            agentConfiguration = objectMapper.readValue(Files.newInputStream(Paths.get(configurationFilePath)), AgentConfiguration.class);// parser.load();
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
@@ -26,10 +29,6 @@ public class AgentConfigurationParser {
         checkPreconditions(agentConfiguration);
 
         return agentConfiguration;
-    }
-
-    private Path getConfigFilePath() {
-        return Paths.get(System.getProperty(CONFIG_FILE_PATH_PROPERTY));
     }
 
     private void checkPreconditions(AgentConfiguration agentConfiguration) {

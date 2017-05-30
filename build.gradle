@@ -44,7 +44,7 @@ repositories {
 }
 
 dependencies {
-    compile 'net.bytebuddy:byte-buddy:1.5.2'
+    compile 'net.bytebuddy:byte-buddy:1.7.0'
     compile 'org.apache.commons:commons-lang3:3.5'
     compile 'com.google.guava:guava:21.0'
     compile 'com.netflix.feign:feign-core:8.18.0'

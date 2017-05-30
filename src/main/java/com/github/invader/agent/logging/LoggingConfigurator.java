@@ -20,12 +20,14 @@ import java.io.IOException;
 public class LoggingConfigurator {
 
     private final Logger rootLogger;
+    private final AgentConfiguration agentConfiguration;
 
-    public LoggingConfigurator() {
+    public LoggingConfigurator(AgentConfiguration agentConfiguration) {
+        this.agentConfiguration = agentConfiguration;
         rootLogger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
     }
 
-    public void configure(AgentConfiguration agentConfiguration) throws IOException {
+    public void configure() throws IOException {
         rootLogger.setLevel(Level.valueOf(agentConfiguration.getLog().getLevel()));
 
         addConsoleAppender();
