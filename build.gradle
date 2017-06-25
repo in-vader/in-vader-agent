@@ -20,7 +20,6 @@ version = '0.0.1'
 shadowJar {
     relocate 'net.bytebuddy', 'com.github.invader.agent.deps.bytebuddy'
     relocate 'org.apache.commons.lang3', 'com.github.invader.agent.deps.commons.lang3'
-    relocate 'org.yaml.snakeyaml', 'com.github.invader.agent.deps.snakeyaml'
     relocate 'com.google', 'com.github.invader.agent.deps.google'
     relocate 'feign', 'com.github.invader.agent.deps.feign'
     relocate 'com.fasterxml.jackson', 'com.github.invader.agent.deps.jackson'
@@ -45,15 +44,16 @@ repositories {
 }
 
 dependencies {
-    compile 'net.bytebuddy:byte-buddy:1.5.2'
+    compile 'net.bytebuddy:byte-buddy:1.7.0'
     compile 'org.apache.commons:commons-lang3:3.5'
-    compile 'org.yaml:snakeyaml:1.8'
     compile 'com.google.guava:guava:21.0'
     compile 'com.netflix.feign:feign-core:8.18.0'
     compile 'com.netflix.feign:feign-jackson:8.18.0'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.6.4'
     compile 'org.slf4j:slf4j-api:1.7.22'
     compile 'ch.qos.logback:logback-classic:1.1.9'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.8.8.1'
+    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.8.8'
 
     testCompile 'junit:junit:4.+'
     testCompile 'com.github.tomakehurst:wiremock:2.5.1'

@@ -22,7 +22,30 @@ java -Dinvader.config.file=agent-config.yml -javaagent:in-vader.jar -jar spring-
     sizeLimit: 100 # the size limit for log files
     daily: true # roll logs daily
     level: INFO # logging level
+ bindings:
+    dir: '/path/to/dir/with/additional/bindings' # leave blank (or skip this section entirely) to disable
 ```
+
+#### Additional binding format
+
+Each binding should be placed in a separate `.yml` file using the following format:
+```
+name: HttpServlet
+className: javax.servlet.http.HttpServlet # name of class to intercept
+methods: # list of methods to intercept
+  -
+    name: service # name of method
+    parameters: # list of method parameter types
+      - javax.servlet.ServletRequest
+      - javax.servlet.ServletResponse
+```
+
+You can also make the bindings match on an interface implementation, by replacing `className` with `interfaceName`.
+
+In order to match subclasses of the provided class, add `includeSubclasses: true` after the `className` attribute.
+
+Matching parameterless methods should be done by providing an empty list for the `parameters` attribute.
+Skipping the `parameters` attribute will match on all methods with the specified name.
 
 ### Mock agent controller
 

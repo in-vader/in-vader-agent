@@ -1,8 +1,11 @@
 package com.github.invader.agent.interceptors;
 
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.implementation.bind.annotation.RuntimeType;
+import net.bytebuddy.implementation.bind.annotation.SuperCall;
 import org.apache.commons.lang3.RandomUtils;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -10,7 +13,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 @Slf4j
-public abstract class DelayInterceptor extends Interceptor {
+public class DelayInterceptor extends Interceptor {
 
     private AtomicInteger minDelay;
     private AtomicInteger maxDelay;
@@ -40,7 +43,9 @@ public abstract class DelayInterceptor extends Interceptor {
         return "delay";
     }
 
-    protected Object doIntercept(Callable<?> callable) throws Exception {
+    @RuntimeType
+    public Object intercept(@SuperCall Callable<?> callable) throws Exception {
+        // TODO: refactor the isEnabled check into the Interceptor base class (investigate why interceptors don't work on inherited methods)
         if (isEnabled()) {
             long delay = delayGenerator.apply(minDelay.get(), maxDelay.get());
             if (delay > 0) {

@@ -8,6 +8,7 @@ public class AgentConfiguration {
     private String group;
     private String name;
     private Log log = new Log();
+    private Bindings bindings = new Bindings();
 
     @Data
     public static class Log {
@@ -17,5 +18,10 @@ public class AgentConfiguration {
         private int fileCount = 1;
         private long sizeLimit = 0;
         private String level = "INFO";
+    }
+
+    @Data
+    public static class Bindings {
+        private String dir;
     }
 }
