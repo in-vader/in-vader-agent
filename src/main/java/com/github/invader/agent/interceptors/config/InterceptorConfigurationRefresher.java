@@ -1,10 +1,14 @@
 package com.github.invader.agent.interceptors.config;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.invader.agent.config.AgentConfiguration;
 import com.github.invader.agent.interceptors.Interceptor;
 import com.github.invader.agent.rest.ConfigurationClient;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
@@ -25,7 +29,7 @@ public class InterceptorConfigurationRefresher {
 
     public void start() {
         executor = Executors.newScheduledThreadPool(1);
-        executor.scheduleWithFixedDelay(new RefresherRunnable(agentConfiguration, interceptors, ConfigurationClient.connect(agentConfiguration.getServer())),
+        executor.scheduleWithFixedDelay(new RefresherRunnable(agentConfiguration, interceptors, FileConfigurationClient.connect("demo-config.json")),
                 0, 10, TimeUnit.SECONDS);
     }
 
@@ -72,6 +76,33 @@ public class InterceptorConfigurationRefresher {
             } catch (Exception e) {
                 log.error("Failed to apply configuration to interceptor {}", interceptor.getClass().getName(), e);
             }
+        }
+    }
+
+    // TODO move me and refactor me
+    public static class FileConfigurationClient implements ConfigurationClient {
+        private final Map<String, Map> fileConfigMap;
+
+        private FileConfigurationClient(Map<String, Map> fileConfigMap) {
+            this.fileConfigMap = fileConfigMap;
+        }
+
+        @Override
+        public Map<String, Map> getConfiguration(String group, String app) {
+            return fileConfigMap;
+        }
+
+        static ConfigurationClient connect(String configFile) {
+            final File config = new File(configFile);
+
+            final Map<String, Map> agentConfig;
+            try {
+                agentConfig = new ObjectMapper().readValue(config, new TypeReference<Map<String,Object>>(){});
+            } catch (IOException e) {
+                throw new RuntimeException(String.format("Can't read file %s.", config.getAbsoluteFile()));
+            }
+
+            return new FileConfigurationClient(agentConfig);
         }
     }
 }

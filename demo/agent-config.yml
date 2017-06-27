@@ -1,0 +1,10 @@
+server: 'http://localhost:8080' # the url of the agent controller
+group: 'testGroup' # the name of the application group
+name: 'testAppName' # the name of the application
+log:
+  fileName: 'in-vader-agent.log' # the name of the log file, will default to 'in-vader-agent.log' if not present
+  filePath: '/logs' # the location where log files will be stored, will default to '.' if not present
+  fileCount: 5 # the number of log files to keep
+  sizeLimit: 100 # the size limit for log files
+  daily: true # roll logs daily
+  level: INFO # logging level

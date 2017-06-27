@@ -1,0 +1,9 @@
+{
+  "delay": {
+    "min": 100,
+    "max": 200
+  },
+  "failure": {
+    "probability": 0.5
+  }
+}
