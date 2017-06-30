@@ -1,3 +1,4 @@
-server: 'http://localhost:8080'
+config:
+  source: 'http://localhost:8080'
 group: 'testGroup'
 name: 'testAppName'

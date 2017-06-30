@@ -2,7 +2,7 @@ package com.github.invader.agent.interceptors.config;
 
 import com.github.invader.agent.config.AgentConfiguration;
 import com.github.invader.agent.interceptors.Interceptor;
-import com.github.invader.agent.rest.ConfigurationClient;
+import com.github.invader.agent.config.client.ConfigurationClient;
 import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Test;

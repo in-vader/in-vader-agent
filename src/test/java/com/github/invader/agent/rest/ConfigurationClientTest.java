@@ -1,5 +1,7 @@
 package com.github.invader.agent.rest;
 
+import com.github.invader.agent.config.client.ConfigurationClient;
+import com.github.invader.agent.config.client.HttpConfigurationClient;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.junit.Before;
 import org.junit.Rule;
@@ -23,7 +25,7 @@ public class ConfigurationClientTest {
 
     @Before
     public void setUp() {
-        configurationClient = ConfigurationClient.connect("http://localhost:" + wireMockRule.port());
+        configurationClient = new HttpConfigurationClient("http://localhost:" + wireMockRule.port());
     }
 
     @Test

@@ -27,7 +27,7 @@ public class AgentConfigurationLoaderTest {
         AgentConfiguration agentConfiguration = agentConfigurationLoader.load(configFilePath);
 
         // then
-        assertThat(agentConfiguration.getServer()).isEqualTo(server);
+        assertThat(agentConfiguration.getConfig().getSource()).isEqualTo(server);
         assertThat(agentConfiguration.getGroup()).isEqualTo(group);
         assertThat(agentConfiguration.getName()).isEqualTo(name);
     }
