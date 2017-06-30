@@ -16,13 +16,14 @@ public class ConfigurationClientFactory {
             throw new IllegalArgumentException("Configuration source '"+source+"' must match "+URL_MATCH_PATTERN.pattern());
         }
         String protocol = matcher.group(1);
+        String remainder = matcher.group(2);
 
         ConfigurationClient client = null;
         switch (protocol) {
             case "http":
             case "https": client = new HttpConfigurationClient(source);
                          break;
-            case "file": client = new FileConfigurationClient(source);
+            case "file": client = new FileConfigurationClient(remainder);
                          break;
             default: new IllegalArgumentException("Unsupported protocol '"+protocol+"' in source '"+source+"'");
         }
