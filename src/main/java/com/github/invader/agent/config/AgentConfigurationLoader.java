@@ -32,7 +32,8 @@ public class AgentConfigurationLoader {
     }
 
     private void checkPreconditions(AgentConfiguration agentConfiguration) {
-        Validate.notBlank(agentConfiguration.getServer(), "Server parameter can't be empty.");
+        //TODO: consider replacing with javax.validation annotations
+        Validate.notBlank(agentConfiguration.getConfig().getSource(), "Source parameter can't be empty.");
         Validate.notBlank(agentConfiguration.getGroup(), "Group parameter can't be empty.");
         Validate.notBlank(agentConfiguration.getName(), "Name parameter can't be empty.");
     }

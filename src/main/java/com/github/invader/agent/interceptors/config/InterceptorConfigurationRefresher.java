@@ -1,8 +1,9 @@
 package com.github.invader.agent.interceptors.config;
 
 import com.github.invader.agent.config.AgentConfiguration;
+import com.github.invader.agent.config.client.ConfigurationClientFactory;
 import com.github.invader.agent.interceptors.Interceptor;
-import com.github.invader.agent.rest.ConfigurationClient;
+import com.github.invader.agent.config.client.ConfigurationClient;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
@@ -14,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 public class InterceptorConfigurationRefresher {
 
+    public static final int DELAY_SECONDS = 10;
     private final AgentConfiguration agentConfiguration;
     private final Interceptor[] interceptors;
     private ScheduledExecutorService executor;
@@ -25,8 +27,10 @@ public class InterceptorConfigurationRefresher {
 
     public void start() {
         executor = Executors.newScheduledThreadPool(1);
-        executor.scheduleWithFixedDelay(new RefresherRunnable(agentConfiguration, interceptors, ConfigurationClient.connect(agentConfiguration.getServer())),
-                0, 10, TimeUnit.SECONDS);
+        executor.scheduleWithFixedDelay(
+                new RefresherRunnable(agentConfiguration, interceptors,
+                        ConfigurationClientFactory.createClient(agentConfiguration.getConfig().getSource())),
+                0, DELAY_SECONDS, TimeUnit.SECONDS);
     }
 
     public void stop() {
