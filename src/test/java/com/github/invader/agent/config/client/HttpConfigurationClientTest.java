@@ -1,4 +1,4 @@
-package com.github.invader.agent.rest;
+package com.github.invader.agent.config.client;
 
 import com.github.invader.agent.config.client.ConfigurationClient;
 import com.github.invader.agent.config.client.HttpConfigurationClient;
@@ -16,7 +16,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ConfigurationClientTest {
+public class HttpConfigurationClientTest {
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().dynamicPort());
