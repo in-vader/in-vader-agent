@@ -4,11 +4,16 @@ import lombok.Data;
 
 @Data
 public class AgentConfiguration {
-    private String server;
+    private Config config;
     private String group;
     private String name;
     private Log log = new Log();
     private Bindings bindings = new Bindings();
+
+    @Data
+    public static class Config {
+        private String source;
+    }
 
     @Data
     public static class Log {
