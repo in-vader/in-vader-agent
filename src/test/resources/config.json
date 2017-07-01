@@ -1,0 +1,11 @@
+{
+  "delay":
+  {
+    "min":120,
+    "max":240
+  },
+  "failure":
+  {
+    "probability":0.6
+  }
+}
