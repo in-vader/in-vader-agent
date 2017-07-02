@@ -1,8 +1,11 @@
 package com.github.invader.agent.interceptors;
 
+import com.github.invader.agent.interceptors.constraints.UnparseableValueException;
 import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -42,7 +45,7 @@ public class PeakInterceptorTest {
     @Test
     public void shouldDelayIfCalculatorReturnsPositiveValue() throws Exception {
 
-        givenExistingConfiguration();
+        givenConfigurationWithStartEndTimeAndMidpoints("15:00:00", "15:15:00", 10, 20, 30, 20, 10);
         givenPeakCalculatorReturnedDelayOf(10);
 
         //when
@@ -57,7 +60,7 @@ public class PeakInterceptorTest {
     @Test
     public void shouldNotDelayIfCalculatorReturnsZero() throws Exception {
 
-        givenExistingConfiguration();
+        givenConfigurationWithStartEndTimeAndMidpoints("15:00:00", "15:15:00", 10, 20, 50, 20, 10);
         givenPeakCalculatorReturnedDelayOf(0);
 
         //when
@@ -83,16 +86,72 @@ public class PeakInterceptorTest {
         verify(callable).call();
     }
 
+    @Test
+    public void shouldFailIfCorruptEndTimeFormat() throws Exception {
+
+        givenConfigurationWithStartEndTimeAndMidpoints("15:00:00", "00:00", 100, 200, 500, 200, 100);
+
+        //when
+        peakInterceptor.intercept(callable);
+
+        //then
+        assertFalse(peakInterceptor.isEnabled());
+        verify(sleeper, never()).accept(anyLong());
+        verify(callable).call();
+    }
+
+    @Test
+    public void shouldFailIfCorruptStartTimeFormat() throws Exception {
+
+        givenConfigurationWithStartEndTimeAndMidpoints("0x", "15:00:00", 100, 200, 500, 200, 100);
+
+        //when
+        peakInterceptor.intercept(callable);
+
+        //then
+        assertFalse(peakInterceptor.isEnabled());
+        verify(sleeper, never()).accept(anyLong());
+        verify(callable).call();
+    }
+
+    @Test
+    public void shouldFailIfStartTimeAfterEnd() throws Exception {
+
+        givenConfigurationWithStartEndTimeAndMidpoints("15:15:00", "15:00:00", 100, 200, 500, 200, 100);
+
+        //when
+        peakInterceptor.intercept(callable);
+
+        //then
+        assertFalse(peakInterceptor.isEnabled());
+        verify(sleeper, never()).accept(anyLong());
+        verify(callable).call();
+    }
+
+    @Test
+    public void shouldFailIfNoMidpoints() throws Exception {
+
+        givenConfigurationWithStartEndTimeAndMidpoints("15:00:00", "15:15:00");
+
+        //when
+        peakInterceptor.intercept(callable);
+
+        //then
+        assertFalse(peakInterceptor.isEnabled());
+        verify(sleeper, never()).accept(anyLong());
+        verify(callable).call();
+    }
+
     private void givenPeakCalculatorReturnedDelayOf(Integer delay) {
         when(peakCalculator.calculateDelay(any(PeakProfile.class), any(LocalTime.class))).thenReturn(delay);
     }
 
-    private void givenExistingConfiguration() {
+    private void givenConfigurationWithStartEndTimeAndMidpoints(String start, String end, Integer ... midpoints) {
         peakInterceptor.setConfig(
                 ImmutableMap.of(
-                        "startTime", "15:00:00",
-                        "endTime", "15:15:00",
-                        "delayMidpoints", Arrays.asList(10, 20, 100, 20, 10)));
+                        "startTime", start,
+                        "endTime", end,
+                        "delayMidpoints", Arrays.asList(midpoints)));
     }
 
     private void givenNoConfiguration() {

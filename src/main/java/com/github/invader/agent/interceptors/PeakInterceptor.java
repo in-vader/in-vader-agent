@@ -1,15 +1,21 @@
 package com.github.invader.agent.interceptors;
 
+import com.github.invader.agent.interceptors.constraints.UnparseableValueException;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.implementation.bind.annotation.RuntimeType;
 import net.bytebuddy.implementation.bind.annotation.SuperCall;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
+
+import static javax.validation.Validation.*;
 
 /**
  * Enables simulation of a short-term peak of delay of a service.
@@ -83,17 +89,34 @@ public class PeakInterceptor extends Interceptor {
         LocalTime endTime = parseField(config, "endTime");
         List<Integer> midpoints = (List<Integer>)config.get("delayMidpoints");
 
-        this.peakProfile = PeakProfile.builder()
+        PeakProfile profile = PeakProfile.builder()
                 .startTime(startTime)
                 .endTime(endTime)
                 .delayMidpoints(midpoints)
                 .build();
+
+        Set<ConstraintViolation<PeakProfile>> constraints = buildDefaultValidatorFactory().getValidator()
+                .validate(profile);
+
+        if (!constraints.isEmpty()) {
+            throw new ConstraintViolationException(this.getClass().getName()+" validation failed", constraints);
+        }
+
+        this.peakProfile = profile;
+
     }
 
     private LocalTime parseField(Map<String, Object> config, String fieldName) {
-        String startTimeString = (String)config.get(fieldName);
-        String[] split = startTimeString.split(":");
-        return LocalTime.of(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), 0);
+        try {
+            String value = (String) config.get(fieldName);
+            String[] split = value.split(":");
+            if (split.length != 3) {
+                throw new UnparseableValueException(fieldName, new IllegalArgumentException(fieldName+" must have format 'dd:dd:dd'. Wrong value: "+value));
+            }
+            return LocalTime.of(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), 0);
+        } catch (NumberFormatException nfe) {
+            throw new UnparseableValueException(fieldName, nfe);
+        }
     }
 
 }
