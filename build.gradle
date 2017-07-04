@@ -25,6 +25,7 @@ shadowJar {
     relocate 'com.fasterxml.jackson', 'com.github.invader.agent.deps.jackson'
     relocate 'org.slf4j', 'com.github.invader.agent.deps.slf4j'
     relocate 'ch.qos.logback', 'com.github.invader.agent.deps.logback'
+    relocate 'org.hibernate', 'com.github.invader.agent.org.hibernate'
     relocate 'org.glassfish', 'com.github.invader.agent.deps.glassfish'
     relocate 'javax.el', 'com.github.invader.agent.deps.javax.el'
 }

@@ -1,12 +1,14 @@
 package com.github.invader.agent.interceptors;
 
 import com.github.invader.agent.interceptors.constraints.UnparseableValueException;
+import com.github.invader.agent.interceptors.validation.JavaxValidatorFactory;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.implementation.bind.annotation.RuntimeType;
 import net.bytebuddy.implementation.bind.annotation.SuperCall;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
@@ -44,6 +46,7 @@ public class PeakInterceptor extends Interceptor {
     private PeakProfile peakProfile;
     private Consumer<Long> sleeper;
     private PeakCalculator peakCalculator = new PeakCalculator();
+    private Validator validator = JavaxValidatorFactory.createValidator();
 
     public PeakInterceptor(Consumer<Long> sleeper) {
         this.sleeper = sleeper;
@@ -95,8 +98,7 @@ public class PeakInterceptor extends Interceptor {
                 .delayMidpoints(midpoints)
                 .build();
 
-        Set<ConstraintViolation<PeakProfile>> constraints = buildDefaultValidatorFactory().getValidator()
-                .validate(profile);
+        Set<ConstraintViolation<PeakProfile>> constraints = validator.validate(profile);
 
         if (!constraints.isEmpty()) {
             throw new ConstraintViolationException(this.getClass().getName()+" validation failed", constraints);

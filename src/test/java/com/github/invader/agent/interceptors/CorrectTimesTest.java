@@ -1,14 +1,12 @@
 package com.github.invader.agent.interceptors;
 
+import com.github.invader.agent.interceptors.validation.JavaxValidatorFactory;
 import org.junit.Test;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import javax.validation.Validator;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,10 +15,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class CorrectTimesTest {
 
-    @Test
-    public void shouldFailWhenStartEndTimeOutOfOrder() {
+    Validator validator = JavaxValidatorFactory.createValidator();
 
-        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+    @Test
+    public void shouldFailWhenStartEndTimeOutOfOrder() throws ClassNotFoundException {
 
         PeakProfile profile = PeakProfile
                 .builder()
@@ -37,8 +35,6 @@ public class CorrectTimesTest {
     @Test
     public void shouldNotFailWhenStartEndTimeInOrder() {
 
-        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-
         PeakProfile profile = PeakProfile
                 .builder()
                 .startTime(LocalTime.MIDNIGHT)
@@ -51,8 +47,6 @@ public class CorrectTimesTest {
 
     @Test
     public void shouldFailWhenNoMidpoints() {
-
-        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
         PeakProfile profile = PeakProfile
                 .builder()
