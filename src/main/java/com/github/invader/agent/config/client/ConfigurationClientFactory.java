@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
  */
 public class ConfigurationClientFactory {
 
-    private static final Pattern URL_MATCH_PATTERN = Pattern.compile("^(https?|file)://(.*)$");
+    private static final Pattern URL_MATCH_PATTERN = Pattern.compile("^([a-z]+)://(.*)$");
 
     public static ConfigurationClient createClient(String source) {
         Matcher matcher = URL_MATCH_PATTERN.matcher(source);
@@ -25,7 +25,7 @@ public class ConfigurationClientFactory {
                          break;
             case "file": client = new FileConfigurationClient(remainder);
                          break;
-            default: new IllegalArgumentException("Unsupported protocol '"+protocol+"' in source '"+source+"'");
+            default: throw new IllegalArgumentException("Unsupported protocol '"+protocol+"' in source '"+source+"'");
         }
 
         return client;

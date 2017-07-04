@@ -53,10 +53,25 @@ public class ConfigurationClientFactoryTest {
     }
 
     @Test
+    public void shouldThrowExceptionIfUnknownProtocol() {
+        //given
+        String source = "files://config.json";
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Unsupported protocol 'files' in source 'files://config.json'");
+
+        //when
+        ConfigurationClient client = ConfigurationClientFactory.createClient(source);
+
+        //then exception
+
+    }
+
+
+    @Test
     public void shouldThrowExceptionForMalformedSource() {
         //given
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("Configuration source 'file:/wrongSeparator' must match ^(https?|file)://(.*)$");
+        thrown.expectMessage("Configuration source 'file:/wrongSeparator' must match ^([a-z]+)://(.*)$");
 
         //when
         ConfigurationClient client = ConfigurationClientFactory.createClient("file:/wrongSeparator");
