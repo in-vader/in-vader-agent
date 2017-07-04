@@ -1,18 +1,24 @@
 package com.github.invader.agent.config;
 
+import com.github.invader.agent.interceptors.constraints.NonEmptyString;
 import lombok.Data;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @Data
 public class AgentConfiguration {
-    private Config config;
-    private String group;
-    private String name;
+    @NotNull @Valid private Config config;
+    @NonEmptyString private String group;
+    @NonEmptyString private String name;
     private Log log = new Log();
     private Bindings bindings = new Bindings();
 
     @Data
     public static class Config {
-        private String source;
+        @NonEmptyString private String source;
+        @NotNull @Min(1L) private long intervalSeconds;
     }
 
     @Data

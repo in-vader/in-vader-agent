@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit;
 
 public class InterceptorConfigurationRefresher {
 
-    public static final int DELAY_SECONDS = 10;
     private final AgentConfiguration agentConfiguration;
     private final Interceptor[] interceptors;
     private ScheduledExecutorService executor;
@@ -33,7 +32,7 @@ public class InterceptorConfigurationRefresher {
                                 agentConfiguration.getConfig().getSource(),
                                 agentConfiguration.getGroup(),
                                 agentConfiguration.getName())),
-                0, DELAY_SECONDS, TimeUnit.SECONDS);
+                0, agentConfiguration.getConfig().getIntervalSeconds(), TimeUnit.SECONDS);
     }
 
     public void stop() {
