@@ -10,7 +10,7 @@ public class ConfigurationClientFactory {
 
     private static final Pattern URL_MATCH_PATTERN = Pattern.compile("^([a-z]+)://(.*)$");
 
-    public static ConfigurationClient createClient(String source) {
+    public static ConfigurationClient createClient(String source, String group, String appName) {
         Matcher matcher = URL_MATCH_PATTERN.matcher(source);
         if (!matcher.matches()) {
             throw new IllegalArgumentException("Configuration source '"+source+"' must match "+URL_MATCH_PATTERN.pattern());
@@ -21,7 +21,7 @@ public class ConfigurationClientFactory {
         ConfigurationClient client = null;
         switch (protocol) {
             case "http":
-            case "https": client = new HttpConfigurationClient(source);
+            case "https": client = new HttpConfigurationClient(source, group, appName);
                          break;
             case "file": client = new FileConfigurationClient(remainder);
                          break;

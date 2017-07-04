@@ -20,7 +20,7 @@ public class FileConfigurationClient implements ConfigurationClient {
     }
 
     @Override
-    public Map<String, Map> getConfiguration(String group, String app) {
+    public Map<String, Map> getConfiguration() {
         File file = new File(filePath);
         log.info("Reading config file {}", file.getAbsolutePath());
         try {

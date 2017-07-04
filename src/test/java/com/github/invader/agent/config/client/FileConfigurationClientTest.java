@@ -18,7 +18,7 @@ public class FileConfigurationClientTest {
         FileConfigurationClient client = new FileConfigurationClient("src/test/resources/config.json");
 
         //when
-        Map<String, Map> configuration = client.getConfiguration("group", "app");
+        Map<String, Map> configuration = client.getConfiguration();
 
         //then
         assertThat(configuration).containsOnlyKeys("delay", "failure", "peak");

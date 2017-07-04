@@ -29,7 +29,10 @@ public class InterceptorConfigurationRefresher {
         executor = Executors.newScheduledThreadPool(1);
         executor.scheduleWithFixedDelay(
                 new RefresherRunnable(agentConfiguration, interceptors,
-                        ConfigurationClientFactory.createClient(agentConfiguration.getConfig().getSource())),
+                        ConfigurationClientFactory.createClient(
+                                agentConfiguration.getConfig().getSource(),
+                                agentConfiguration.getGroup(),
+                                agentConfiguration.getName())),
                 0, DELAY_SECONDS, TimeUnit.SECONDS);
     }
 
@@ -54,7 +57,7 @@ public class InterceptorConfigurationRefresher {
             Map<String, Map> config = Collections.emptyMap();
             try {
                 log.debug("Fetching configuration for agent.");
-                config = configurationClient.getConfiguration(agentConfiguration.getGroup(), agentConfiguration.getName());
+                config = configurationClient.getConfiguration();
                 log.debug("Retrieved configuration for agent: {}", config);
             } catch (Exception e) {
                 log.error("Error while fetching configuration for agent.", e);

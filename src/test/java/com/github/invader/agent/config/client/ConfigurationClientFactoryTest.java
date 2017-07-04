@@ -22,7 +22,7 @@ public class ConfigurationClientFactoryTest {
         String source = "http://localhost:8080/";
 
         //when
-        ConfigurationClient client = ConfigurationClientFactory.createClient(source);
+        ConfigurationClient client = ConfigurationClientFactory.createClient(source, "group", "app");
 
         //then
         assertThat(client).isInstanceOf(HttpConfigurationClient.class);
@@ -34,7 +34,7 @@ public class ConfigurationClientFactoryTest {
         String source = "https://localhost:8080/";
 
         //when
-        ConfigurationClient client = ConfigurationClientFactory.createClient(source);
+        ConfigurationClient client = ConfigurationClientFactory.createClient(source, "group", "app");
 
         //then
         assertThat(client).isInstanceOf(HttpConfigurationClient.class);
@@ -46,7 +46,7 @@ public class ConfigurationClientFactoryTest {
         String source = "file://config.json";
 
         //when
-        ConfigurationClient client = ConfigurationClientFactory.createClient(source);
+        ConfigurationClient client = ConfigurationClientFactory.createClient(source, "group", "app");
 
         //then
         assertThat(client).isInstanceOf(FileConfigurationClient.class);
@@ -60,7 +60,7 @@ public class ConfigurationClientFactoryTest {
         thrown.expectMessage("Unsupported protocol 'files' in source 'files://config.json'");
 
         //when
-        ConfigurationClient client = ConfigurationClientFactory.createClient(source);
+        ConfigurationClient client = ConfigurationClientFactory.createClient(source, "group", "app");
 
         //then exception
 
@@ -74,7 +74,7 @@ public class ConfigurationClientFactoryTest {
         thrown.expectMessage("Configuration source 'file:/wrongSeparator' must match ^([a-z]+)://(.*)$");
 
         //when
-        ConfigurationClient client = ConfigurationClientFactory.createClient("file:/wrongSeparator");
+        ConfigurationClient client = ConfigurationClientFactory.createClient("file:/wrongSeparator", "group", "app");
 
         //then exception
     }

@@ -25,7 +25,7 @@ public class HttpConfigurationClientTest {
 
     @Before
     public void setUp() {
-        configurationClient = new HttpConfigurationClient("http://localhost:" + wireMockRule.port());
+        configurationClient = new HttpConfigurationClient("http://localhost:" + wireMockRule.port(), "testGroup", "testApp");
     }
 
     @Test
@@ -52,7 +52,7 @@ public class HttpConfigurationClientTest {
                                 .withHeader("content-type", "application/json")));
 
         // when
-        Map<String, Map> configuration = configurationClient.getConfiguration(group, app);
+        Map<String, Map> configuration = configurationClient.getConfiguration();
 
         // then
         assertThat(configuration).containsOnlyKeys("delay", "failure");

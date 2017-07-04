@@ -35,8 +35,6 @@ public class InterceptorConfigurationRefresherTest {
     public void setUp() {
         task = new InterceptorConfigurationRefresher.RefresherRunnable(agentConfiguration, new Interceptor[] { interceptor }, configurationClient);
 
-        when(agentConfiguration.getGroup()).thenReturn("testGroup");
-        when(agentConfiguration.getName()).thenReturn("testName");
         when(interceptor.getName()).thenReturn("failure");
     }
 
@@ -44,7 +42,7 @@ public class InterceptorConfigurationRefresherTest {
     public void shouldUpdateInterceptorWithNewConfiguration() {
         // given
         Map<String, Object> failureConfig = Collections.emptyMap();
-        when(configurationClient.getConfiguration(anyString(), anyString())).thenReturn(ImmutableMap.of("failure", failureConfig));
+        when(configurationClient.getConfiguration()).thenReturn(ImmutableMap.of("failure", failureConfig));
 
         // when
         task.run();
@@ -56,7 +54,7 @@ public class InterceptorConfigurationRefresherTest {
     @Test
     public void shouldUpdateInterceptorWithEmptyConfigurationWhenClientFails() {
         // given
-        when(configurationClient.getConfiguration(anyString(), anyString())).thenThrow(new RuntimeException());
+        when(configurationClient.getConfiguration()).thenThrow(new RuntimeException());
 
         // when
         task.run();
