@@ -18,7 +18,7 @@ public class AgentConfiguration {
     @Data
     public static class Config {
         @NonEmptyString private String source;
-        @NotNull @Min(1L) private long intervalSeconds;
+        @NotNull @Min(1L) private long intervalSeconds = 10;
     }
 
     @Data

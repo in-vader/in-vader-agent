@@ -27,8 +27,8 @@ import static javax.validation.Validation.*;
  * Enables simulation of a short-term peak of delay of a service.
  *
  * "peak": {
- *     "startTime": "15:00:00",
- *     "endTime":   "16:00:00",
+ *     "startTime": "15:00:00+01:00",
+ *     "endTime":   "16:00:00+01:00",
  *     "delayMidpoints": [100,500,1000,700,700,300,300,300,100,100,100,100]
  * }
  *
