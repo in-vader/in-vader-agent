@@ -10,12 +10,16 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import java.time.LocalTime;
+import java.time.OffsetTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 import static javax.validation.Validation.*;
 
@@ -52,8 +56,8 @@ public class PeakInterceptor extends Interceptor {
         this.sleeper = sleeper;
         this.peakProfile = PeakProfile
                 .builder()
-                .startTime(LocalTime.MIDNIGHT)
-                .endTime(LocalTime.NOON)
+                .startTime(OffsetTime.MIN)
+                .endTime(OffsetTime.of(12,0,0,0, ZoneOffset.ofHours(0)))
                 .delayMidpoints(Arrays.asList(0))
                 .build();
     }
@@ -76,7 +80,7 @@ public class PeakInterceptor extends Interceptor {
     @RuntimeType
     public Object intercept(@SuperCall Callable<?> callable) throws Exception {
         if (isEnabled()) {
-            long delay = peakCalculator.calculateDelay(peakProfile, LocalTime.now());
+            long delay = peakCalculator.calculateDelay(peakProfile, OffsetTime.now());
             if (delay > 0) {
                 log.info("Sleeping for {} ms", delay);
                 sleeper.accept(delay);
@@ -88,8 +92,8 @@ public class PeakInterceptor extends Interceptor {
     @Override
     protected void applyConfig(Map<String, Object> config) {
 
-        LocalTime startTime = parseField(config, "startTime");
-        LocalTime endTime = parseField(config, "endTime");
+        OffsetTime startTime = parseField(config, "startTime");
+        OffsetTime endTime = parseField(config, "endTime");
         List<Integer> midpoints = (List<Integer>)config.get("delayMidpoints");
 
         PeakProfile profile = PeakProfile.builder()
@@ -108,16 +112,13 @@ public class PeakInterceptor extends Interceptor {
 
     }
 
-    private LocalTime parseField(Map<String, Object> config, String fieldName) {
+    private OffsetTime parseField(Map<String, Object> config, String fieldName) {
+
+        String offsetTimeValue = (String) config.get(fieldName);
         try {
-            String value = (String) config.get(fieldName);
-            String[] split = value.split(":");
-            if (split.length != 3) {
-                throw new UnparseableValueException(fieldName, new IllegalArgumentException(fieldName+" must have format 'dd:dd:dd'. Wrong value: "+value));
-            }
-            return LocalTime.of(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), 0);
-        } catch (NumberFormatException nfe) {
-            throw new UnparseableValueException(fieldName, nfe);
+            return OffsetTime.parse(offsetTimeValue);
+        } catch (DateTimeParseException e) {
+            throw new UnparseableValueException("Unparseable OffsetTime format for "+fieldName+"="+offsetTimeValue, e);
         }
     }
 

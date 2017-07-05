@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.LocalTime;
+import java.time.OffsetTime;
 import java.util.List;
 
 /**
@@ -25,10 +25,10 @@ import java.util.List;
 public class PeakProfile {
 
     @NotNull
-    private LocalTime startTime;
+    private OffsetTime startTime;
 
     @NotNull
-    private LocalTime endTime;
+    private OffsetTime endTime;
 
     @NotNull @Size(min = 1, message = "Please provide at least 1 midpoint")
     private List<Integer> delayMidpoints;

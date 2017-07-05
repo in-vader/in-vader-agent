@@ -41,7 +41,7 @@ public class ConfigurationClientFactoryTest {
     }
 
     @Test
-    public void shouldReturnHttpConfigurationClientForFilePrefix() {
+    public void shouldReturnFileConfigurationClientForFilePrefix() {
         //given
         String source = "file://config.json";
 

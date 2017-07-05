@@ -5,6 +5,8 @@ import org.junit.Test;
 
 import javax.validation.Validator;
 import java.time.LocalTime;
+import java.time.OffsetTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -22,14 +24,30 @@ public class CorrectTimesTest {
 
         PeakProfile profile = PeakProfile
                 .builder()
-                .startTime(LocalTime.NOON)
-                .endTime(LocalTime.MIDNIGHT)
+                .startTime(OffsetTime.of(12,0,0,0, ZoneOffset.UTC))
+                .endTime(OffsetTime.of(11,0,0,0, ZoneOffset.UTC))
                 .delayMidpoints(Arrays.asList(100))
                 .build();
 
         assertThat(validator.validate(profile))
                 .extracting("message")
-                .containsExactly("Start time (12:00) must be before end time (00:00)");
+                .containsExactly("Start time (12:00Z) must be before end time (11:00Z)");
+    }
+
+    @Test
+    public void shouldFailWhenStartEndTimeOutOfOrderBecauseOfTimezones() throws ClassNotFoundException {
+
+        PeakProfile profile = PeakProfile
+                .builder()
+                .startTime(OffsetTime.of(12,0,0,0, ZoneOffset.ofHours(-3)))
+                .endTime(OffsetTime.of(13,0,0,0, ZoneOffset.ofHours(2)))
+                .delayMidpoints(Arrays.asList(100))
+                .build();
+
+        assertThat(validator.validate(profile))
+                .extracting("message")
+                .containsExactly("Start time (12:00-03:00) must be before end time (13:00+02:00)");
+        //Noon in Brasil (-03:00) is effectively *later* than 13:00 in Romania (+02:00)
     }
 
     @Test
@@ -37,8 +55,8 @@ public class CorrectTimesTest {
 
         PeakProfile profile = PeakProfile
                 .builder()
-                .startTime(LocalTime.MIDNIGHT)
-                .endTime(LocalTime.NOON)
+                .startTime(OffsetTime.of(12,0,0,0, ZoneOffset.UTC))
+                .endTime(OffsetTime.of(14,0,0,0, ZoneOffset.UTC))
                 .delayMidpoints(Arrays.asList(100))
                 .build();
 
@@ -50,8 +68,8 @@ public class CorrectTimesTest {
 
         PeakProfile profile = PeakProfile
                 .builder()
-                .startTime(LocalTime.MIDNIGHT)
-                .endTime(LocalTime.NOON)
+                .startTime(OffsetTime.of(12,0,0,0, ZoneOffset.UTC))
+                .endTime(OffsetTime.of(14,0,0,0, ZoneOffset.UTC))
                 .delayMidpoints(new ArrayList<>())
                 .build();
 

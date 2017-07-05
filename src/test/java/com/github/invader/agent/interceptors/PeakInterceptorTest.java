@@ -45,7 +45,7 @@ public class PeakInterceptorTest {
     @Test
     public void shouldDelayIfCalculatorReturnsPositiveValue() throws Exception {
 
-        givenConfigurationWithStartEndTimeAndMidpoints("15:00:00", "15:15:00", 10, 20, 30, 20, 10);
+        givenConfigurationWithStartEndTimeAndMidpoints("15:00:00-05:00", "15:15:00-05:00", 10, 20, 30, 20, 10);
         givenPeakCalculatorReturnedDelayOf(10);
 
         //when
@@ -60,7 +60,7 @@ public class PeakInterceptorTest {
     @Test
     public void shouldNotDelayIfCalculatorReturnsZero() throws Exception {
 
-        givenConfigurationWithStartEndTimeAndMidpoints("15:00:00", "15:15:00", 10, 20, 50, 20, 10);
+        givenConfigurationWithStartEndTimeAndMidpoints("15:00:00+01:00", "15:15:00+01:00", 10, 20, 50, 20, 10);
         givenPeakCalculatorReturnedDelayOf(0);
 
         //when
@@ -143,7 +143,7 @@ public class PeakInterceptorTest {
     }
 
     private void givenPeakCalculatorReturnedDelayOf(Integer delay) {
-        when(peakCalculator.calculateDelay(any(PeakProfile.class), any(LocalTime.class))).thenReturn(delay);
+        when(peakCalculator.calculateDelay(any(PeakProfile.class), any(OffsetTime.class))).thenReturn(delay);
     }
 
     private void givenConfigurationWithStartEndTimeAndMidpoints(String start, String end, Integer ... midpoints) {

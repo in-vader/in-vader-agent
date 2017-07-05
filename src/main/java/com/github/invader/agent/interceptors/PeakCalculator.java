@@ -2,7 +2,7 @@ package com.github.invader.agent.interceptors;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalTime;
+import java.time.OffsetTime;
 import java.time.temporal.ChronoUnit;
 
 /**
@@ -20,7 +20,7 @@ public class PeakCalculator {
      * @return 0 if current time is outside of the peak profile hour
      * or the delay [millis] corresponding to the correct midpoint (proportionally to time)
      */
-    public int calculateDelay(PeakProfile peakProfile, LocalTime time) {
+    public int calculateDelay(PeakProfile peakProfile, OffsetTime time) {
 
         if (time.isAfter(peakProfile.getStartTime())
                 && time.isBefore(peakProfile.getEndTime())) {

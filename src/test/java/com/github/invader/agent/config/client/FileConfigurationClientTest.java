@@ -1,5 +1,7 @@
 package com.github.invader.agent.config.client;
 
+import com.github.invader.agent.config.AgentConfigurationLoader;
+import com.github.invader.agent.interceptors.PeakInterceptor;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -28,8 +30,8 @@ public class FileConfigurationClientTest {
         assertThat(configuration.get("failure"))
                 .containsEntry("probability", 0.6);
         assertThat(configuration.get("peak"))
-                .containsEntry("startTime", "19:31:00")
-                .containsEntry("endTime", "19:35:00")
+                .containsEntry("startTime", "19:31:00+02:00")
+                .containsEntry("endTime", "19:35:00+02:00")
                 .containsEntry("delayMidpoints",
                         Arrays.asList(50,100,150,300,2000,3000,3000,1500,500,300,100,50));
     }
