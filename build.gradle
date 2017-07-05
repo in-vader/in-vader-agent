@@ -22,12 +22,16 @@ shadowJar {
     relocate 'org.apache.commons.lang3', 'com.github.invader.agent.deps.commons.lang3'
     relocate 'com.google', 'com.github.invader.agent.deps.google'
     relocate 'feign', 'com.github.invader.agent.deps.feign'
-    relocate 'com.fasterxml.jackson', 'com.github.invader.agent.deps.jackson'
+    relocate 'com.fasterxml', 'com.github.invader.agent.deps.fasterxml'
     relocate 'org.slf4j', 'com.github.invader.agent.deps.slf4j'
     relocate 'ch.qos.logback', 'com.github.invader.agent.deps.logback'
-    relocate 'org.hibernate', 'com.github.invader.agent.org.hibernate'
-    relocate 'org.glassfish', 'com.github.invader.agent.deps.glassfish'
+    relocate 'org.hibernate.validator', 'com.github.invader.agent.deps.hibernate.validator'
+    relocate 'javax.validation', 'com.github.invader.agent.deps.javax.validation'
     relocate 'javax.el', 'com.github.invader.agent.deps.javax.el'
+    relocate 'org.jboss.logging', 'com.github.invader.agent.deps.jboss.logging'
+    relocate 'org.jvnet.animal_sniffer', 'com.github.invader.agent.deps.jvnet.animal_sniffer'
+    relocate 'org.yaml.snakeyaml', 'com.github.invader.agent.deps.yaml.snakeyaml'
+    relocate 'com.sun.el', 'com.github.invader.agent.deps.sun.el'
 }
 
 jar {

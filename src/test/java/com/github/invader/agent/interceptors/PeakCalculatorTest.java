@@ -2,16 +2,12 @@ package com.github.invader.agent.interceptors;
 
 import org.junit.Test;
 
-import java.time.LocalTime;
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Created by Jacek on 2017-07-01.
- */
 public class PeakCalculatorTest {
 
     PeakProfile profile = PeakProfile.builder()

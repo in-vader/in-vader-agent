@@ -7,9 +7,6 @@ import java.time.temporal.ChronoUnit;
 
 /**
  * Calculates delay based on PeakProfile definition and current time.
- *
- *
- * Created by Jacek on 2017-07-01.
  */
 @Slf4j
 public class PeakCalculator {
@@ -28,7 +25,7 @@ public class PeakCalculator {
             long fullInterval = peakProfile.getStartTime().until(peakProfile.getEndTime(), ChronoUnit.MILLIS);
             double peakProgressFraction = (double)intervalFromStart / (double)fullInterval;
             int currentMidpoint = (int) (peakProgressFraction * peakProfile.getDelayMidpoints().size());
-            log.info("At position "+currentMidpoint);
+            log.info("At position {}", currentMidpoint);
             return peakProfile.getDelayMidpoints().get(currentMidpoint);
         }
         return 0;

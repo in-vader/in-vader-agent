@@ -1,32 +1,23 @@
 package com.github.invader.agent.interceptors;
 
-import com.github.invader.agent.interceptors.constraints.UnparseableValueException;
 import com.google.common.collect.ImmutableMap;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.time.*;
+import java.time.OffsetTime;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-/**
- * Created by Jacek on 2017-07-01.
- */
 @RunWith(MockitoJUnitRunner.class)
 public class PeakInterceptorTest {
 

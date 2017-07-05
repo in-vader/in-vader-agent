@@ -1,7 +1,5 @@
 package com.github.invader.agent.config.client;
 
-import com.github.invader.agent.config.AgentConfigurationLoader;
-import com.github.invader.agent.interceptors.PeakInterceptor;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -9,9 +7,6 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Created by Jacek on 2017-06-30.
- */
 public class FileConfigurationClientTest {
 
     @Test

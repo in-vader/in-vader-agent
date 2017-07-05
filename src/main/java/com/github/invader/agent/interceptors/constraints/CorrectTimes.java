@@ -12,9 +12,6 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-/**
- * Created by Jacek on 2017-07-02.
- */
 @Target({ FIELD, METHOD, PARAMETER, TYPE })
 @Retention(RUNTIME)
 @Constraint(validatedBy = CorrectTimes.CorrectTimesValidator.class)

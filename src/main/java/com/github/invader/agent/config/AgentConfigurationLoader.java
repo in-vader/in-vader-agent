@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.github.invader.agent.interceptors.validation.JavaxValidatorFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.Validate;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -27,7 +26,7 @@ public class AgentConfigurationLoader {
         AgentConfiguration agentConfiguration;
 
         try {
-            agentConfiguration = objectMapper.readValue(Files.newInputStream(Paths.get(configurationFilePath)), AgentConfiguration.class);// parser.load();
+            agentConfiguration = objectMapper.readValue(Files.newInputStream(Paths.get(configurationFilePath)), AgentConfiguration.class);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
@@ -35,17 +34,10 @@ public class AgentConfigurationLoader {
         Set<ConstraintViolation<AgentConfiguration>> violations = JavaxValidatorFactory.createValidator().validate(agentConfiguration);
         if (!violations.isEmpty()) {
             log.error("-------- Agent configuration invalid ---------");
-            violations.forEach(v -> log.error(v.getPropertyPath()+": "+v.getMessage()));
+            violations.forEach(v -> log.error("{}: {}", v.getPropertyPath(), v.getMessage()));
             throw new ConstraintViolationException("Agent configuration invalid. See error log for details.", violations);
         }
 
         return agentConfiguration;
-    }
-
-    private void checkPreconditions(AgentConfiguration agentConfiguration) {
-        //TODO: consider replacing with javax.constraints annotations
-        Validate.notBlank(agentConfiguration.getConfig().getSource(), "Source parameter can't be empty.");
-        Validate.notBlank(agentConfiguration.getGroup(), "Group parameter can't be empty.");
-        Validate.notBlank(agentConfiguration.getName(), "Name parameter can't be empty.");
     }
 }

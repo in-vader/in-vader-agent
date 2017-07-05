@@ -2,15 +2,11 @@ package com.github.invader.agent.config.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-/**
- * Created by Jacek on 2017-06-30.
- */
 @Slf4j
 public class FileConfigurationClient implements ConfigurationClient {
     private final String filePath;

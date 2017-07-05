@@ -7,9 +7,6 @@ import feign.jackson.JacksonDecoder;
 
 import java.util.Map;
 
-/**
- * Created by Jacek on 2017-06-30.
- */
 public class HttpConfigurationClient implements ConfigurationClient {
 
     int CONNECT_TIMEOUT_MILLIS = 1 * 1000;

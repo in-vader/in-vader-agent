@@ -4,7 +4,6 @@ import com.github.invader.agent.interceptors.validation.JavaxValidatorFactory;
 import org.junit.Test;
 
 import javax.validation.Validator;
-import java.time.LocalTime;
 import java.time.OffsetTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -12,9 +11,6 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Created by Jacek on 2017-07-02.
- */
 public class CorrectTimesTest {
 
     Validator validator = JavaxValidatorFactory.createValidator();

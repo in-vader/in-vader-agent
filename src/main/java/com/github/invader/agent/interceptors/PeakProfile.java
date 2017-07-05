@@ -14,8 +14,6 @@ import java.util.List;
 /**
  * Definition of a peak profile.
  * @see PeakInterceptor
- *
- * Created by Jacek on 2017-07-01.
  */
 @Data
 @Builder

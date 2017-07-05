@@ -21,11 +21,11 @@ public abstract class Interceptor {
                 applyConfig(config);
                 setEnabled(true);
             } catch (ConstraintViolationException e) {
-                log.error("Interceptor["+getName()+"] invalid configuration: '"+e.getMessage()+"'");
+                log.error("Interceptor[{}] invalid configuration: '{}'", getName(), e.getMessage());
                 e.getConstraintViolations().stream().forEach(c -> log.error(c.getMessage()));
                 setEnabled(false);
             } catch (UnparseableValueException e) {
-                log.error("Interceptor["+getName()+"] unparseable config: '"+e.getMessage()+"'");
+                log.error("Interceptor[{}] unparseable config: '{}'", getName(), e.getMessage());
                 setEnabled(false);
             }
         }

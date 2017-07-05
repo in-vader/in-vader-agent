@@ -4,7 +4,7 @@ import org.hibernate.validator.HibernateValidator;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.validation.spi.ValidationProvider;
+import java.util.Arrays;
 
 /**
  * Wraps Validator class creation logic.
@@ -18,28 +18,17 @@ import javax.validation.spi.ValidationProvider;
  * Notice: additionally for the (relocated) validator provider to work without
  * writing a custom resolver, an appropriate SPI javax.validation implementation file
  * must be placed in META-INF.
- *
- * Created by Jacek on 2017-07-04.
  */
 public class JavaxValidatorFactory {
 
     public static Validator createValidator() {
-        Validator validator;
-        String validatorClassName = null;
-        try {
-            validatorClassName = HibernateValidator.class.getName();
-            validator = Validation
-                    .byProvider(
-                            (Class<? extends ValidationProvider>)
-                                    Class.forName(validatorClassName)
-                    )
-                    .configure()
-                    .buildValidatorFactory()
-                    .getValidator();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Cannot initialize ValidatorProvider "+validatorClassName, e);
-        }
-        return validator;
+        return
+                Validation
+                        .byDefaultProvider()
+                        .providerResolver(() -> Arrays.asList(new HibernateValidator()))
+                        .configure()
+                        .buildValidatorFactory()
+                        .getValidator();
     }
 
 }
