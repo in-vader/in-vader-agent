@@ -1,8 +1,9 @@
 package com.github.invader.agent.interceptors.config;
 
 import com.github.invader.agent.config.AgentConfiguration;
+import com.github.invader.agent.config.client.ConfigurationClientFactory;
 import com.github.invader.agent.interceptors.Interceptor;
-import com.github.invader.agent.rest.ConfigurationClient;
+import com.github.invader.agent.config.client.ConfigurationClient;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
@@ -25,8 +26,13 @@ public class InterceptorConfigurationRefresher {
 
     public void start() {
         executor = Executors.newScheduledThreadPool(1);
-        executor.scheduleWithFixedDelay(new RefresherRunnable(agentConfiguration, interceptors, ConfigurationClient.connect(agentConfiguration.getServer())),
-                0, 10, TimeUnit.SECONDS);
+        executor.scheduleWithFixedDelay(
+                new RefresherRunnable(agentConfiguration, interceptors,
+                        ConfigurationClientFactory.createClient(
+                                agentConfiguration.getConfig().getSource(),
+                                agentConfiguration.getGroup(),
+                                agentConfiguration.getName())),
+                0, agentConfiguration.getConfig().getIntervalSeconds(), TimeUnit.SECONDS);
     }
 
     public void stop() {
@@ -50,7 +56,7 @@ public class InterceptorConfigurationRefresher {
             Map<String, Map> config = Collections.emptyMap();
             try {
                 log.debug("Fetching configuration for agent.");
-                config = configurationClient.getConfiguration(agentConfiguration.getGroup(), agentConfiguration.getName());
+                config = configurationClient.getConfiguration();
                 log.debug("Retrieved configuration for agent: {}", config);
             } catch (Exception e) {
                 log.error("Error while fetching configuration for agent.", e);

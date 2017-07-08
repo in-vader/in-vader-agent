@@ -1,3 +1,5 @@
-server: 'http://localhost:8080'
+config:
+  source: 'http://localhost:8080'
+  intervalSeconds: 10
 group: 'testGroup'
 name: 'testAppName'

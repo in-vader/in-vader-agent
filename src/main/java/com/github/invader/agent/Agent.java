@@ -23,7 +23,10 @@ public class Agent {
 
             new LoggingConfigurator(agentConfiguration).configure();
 
-            Interceptor[] interceptors = new Interceptor[]{new DelayInterceptor(), new FailInterceptor()};
+            Interceptor[] interceptors = new Interceptor[]{
+                    new DelayInterceptor(),
+                    new FailInterceptor(),
+                    new PeakInterceptor()};
 
             InterceptorBinder binder = new InterceptorBinder(new LoggingListener(), interceptors, instrumentation);
             for (InterceptorBinding binding : new InterceptorBindingLoader(agentConfiguration).loadBindings()) {
